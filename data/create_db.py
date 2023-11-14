@@ -21,6 +21,8 @@ query_instructions = [
         all_fields),
     ('duplicate', 'Represent the Magic: The Gathering card for retrieving duplicate cards: ',
         ['type_line', 'mana_cost', 'color_identity', 'produced_mana', 'oracle_text']),
+    ('dupe2', 'Represent the Magic: The Gathering card for retrieving duplicate cards: ',
+        ['type_line', 'mana_cost', 'oracle_text']),
     ('spike', 'Represent the functionality of the Magic: The Gathering card in terms of its overall effect on the game for retrieval of similar cards: ',
         ['type_line', 'cmc', 'power', 'produced_mana', 'oracle_text']),
     ('melvin', 'Represent the themes of the Magic: The Gathering card in terms of creature types, deck archetypes, and other functional archetypes (such as counters, planeswalkers, aristocrats, infect, etc) for retrieval of related cards: ',
@@ -57,11 +59,9 @@ splitter = CharacterTextSplitter()
 # Add documents to the DB
 query_instruction = query_instructions[0][1]
 
-documents = []
-
 def card_field(card, field):
+    field_name = field.replace('_', ' ').title()
     if field in card:
-        field_name = field.replace('_', ' ').title()
         return f'\n{field_name}: {card[field]}'
     else:
         if 'card_faces' in card:
@@ -72,7 +72,7 @@ def card_field(card, field):
                     field_texts.append(f'{field_name}: {face[field]}')
             if len(field_texts) > 0:
                 return '\n' + ' // '.join(field_texts)
-    return ''
+    return f'\n{field_name}: n/a'
 
 
 # Create a client for all of the collections
@@ -97,7 +97,7 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
     cached_embeddings = tag_collection.get(include=[])
     cached_ids = cached_embeddings['ids']
 
-    print(f' Generating embeddings for {len(documents)} cards ({len(cached_ids)} precached) for {query_tag}...')
+    print(f' Generating embeddings for {len(card_data)} cards ({len(cached_ids)} precached) for {query_tag}...')
 
     idx = 0
     # Generate embeddings for each document and add each document to the DB
@@ -105,6 +105,14 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
         idx += 1
 
         card_id = card['id']
+
+        # Replace all instances of the card name with 'this card'
+        oracle_text = card_field(card, 'oracle_text')
+        card_names = card['name'].split(' // ')
+        for card_name in card_names:
+            card_name = card_name.strip()
+            oracle_text = oracle_text.replace(card_name, 'this card')
+        card['oracle_text'] = oracle_text.replace('\noracle_text: ', '')
 
         card_content = ''
         # Build a text representation of each card
