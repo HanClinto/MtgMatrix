@@ -3,7 +3,7 @@ function toggleTheme() {
     const body = document.body;
     const currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
 
-    if (currentTheme === 'light') {
+    if (currentTheme === 'dark') {
         body.classList.remove('light-theme');
         body.classList.add('dark-theme');
     } else {

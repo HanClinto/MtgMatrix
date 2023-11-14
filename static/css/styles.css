@@ -56,13 +56,13 @@ button {
 
 /* Light and Dark Theme */
 body.light-theme {
-    background-color: #fff;
+    background-color: #ccc;
     color: #333;
 }
 
 body.dark-theme {
     background-color: #333;
-    color: #fff;
+    color: #ccc;
 }
 
 .card, .related-card, .card-detail {

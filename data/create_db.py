@@ -1,6 +1,7 @@
 import json
 import sys
 import argparse
+import pickle
 from datetime import datetime
 
 from tqdm import tqdm
@@ -18,8 +19,10 @@ all_fields = ['type_line', 'mana_cost', 'cmc', 'power', 'toughness', 'loyalty', 
 query_instructions = [
     ('similar', 'Represent the Magic: The Gathering card for retrieving similar cards: ',
         all_fields),
+    ('duplicate', 'Represent the Magic: The Gathering card for retrieving duplicate cards: ',
+        ['type_line', 'mana_cost', 'color_identity', 'produced_mana', 'oracle_text']),
     ('spike', 'Represent the functionality of the Magic: The Gathering card in terms of its overall effect on the game for retrieval of similar cards: ',
-        ['type_line', 'mana_cost', 'cmc', 'power', 'produced_mana', 'oracle_text']),
+        ['type_line', 'cmc', 'power', 'produced_mana', 'oracle_text']),
     ('melvin', 'Represent the themes of the Magic: The Gathering card in terms of creature types, deck archetypes, and other functional archetypes (such as counters, planeswalkers, aristocrats, infect, etc) for retrieval of related cards: ',
         ['type_line', 'produced_mana', 'oracle_text']),
     ('vorthos', 'Represent the flavor of the Magic: The Gathering card in terms of its themes, characters, emotions, and flavor text for retrieval of related cards: ',
@@ -89,7 +92,7 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
     tag_collection = client.get_or_create_collection(
         name=query_tag,
         #embedding_function=embedding_function,
-        metadata={"hnsw:space": "cosine"})
+        metadata={"hnsw:space": "cosine", "hnsw:construction_ef": 1000, "hnsw:search_ef": 200})
 
     cached_embeddings = tag_collection.get(include=[])
     cached_ids = cached_embeddings['ids']
@@ -118,7 +121,22 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
 
         tag_collection.upsert(embeddings=embeddings, ids=[card_id])
 
-    print(f' {len(tag_db)} cards added to the DB for {query_tag}.')
+    print(f' {idx} cards added to the DB for {query_tag}.')
+    
+    cached_embeddings = tag_collection.get(include=['embeddings'])
+    cached_ids = cached_embeddings['ids']
+
+    embeddings_by_id = {}
+    for idx, card_id in enumerate(cached_ids):
+        embeddings_by_id[card_id] = cached_embeddings['embeddings'][idx]
+
+    print(f' Writing {len(cached_ids)} embeddings to embeddings_{output_dir}_{query_tag}.pickle...')
+    # Output the embeddings to pickle for easier debugging and re-use in other indices
+    with open(f'embeddings_{output_dir}_{query_tag}.pickle', 'wb') as f:
+        pickle.dump(embeddings_by_id, f)
+    #with open(f'embeddings_{output_dir}_{query_tag}.json', 'w') as f:
+    #    json.dump(embeddings_by_id, f, indent=0)
+    print(f'  Done writing embeddings!')
 
 # TODO: Combine all of the DBs into a single DB.
 # db = Chroma(persist_directory=output_dir)

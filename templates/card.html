@@ -21,23 +21,25 @@
         <a href="https://www.tcgplayer.com/product/{{card.tcgplayer_id}}/"><p><strong>Price (USD):</strong> ${{ card.prices.usd }}</p></a>
     </div>
 
-    <h2>Related Cards</h2>
+    <h2 id="related">Cards Related to {{ card.name }}</h2>
     <div class="related-card-grid">
         {% for related_card in related_cards %}
             <div class="related-card">
-                <h3>{{ related_card.name }}</h3>
-                <img src="{{ related_card.image_uris.normal }}" alt="{{ related_card.name }}">
+                <a href="{{ url_for('card', sfid=related_card.id) }}">
+                    <h3>{{ related_card.name }}</h3>
+                    <img src="{{ related_card.image_uris.normal }}" alt="{{ related_card.name }}">
+                </a>
                 <a href="https://www.tcgplayer.com/product/{{related_card.tcgplayer_id}}/"><p>Price: $ {{ related_card.prices.usd }}</p></a>
             </div>
         {% endfor %}
     </div>
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('card', sfid=card.id, page=page-1) }}">&laquo; Previous</a>
+            <a href="{{ url_for('card', sfid=card.id, page=page-1, _anchor='related') }}">&laquo; Previous</a>
         {% endif %}
         <span>Page {{ page }} of {{ total_pages }}</span>
         {% if page < total_pages %}
-            <a href="{{ url_for('card', sfid=card.id, page=page+1) }}">Next &raquo;</a>
+            <a href="{{ url_for('card', sfid=card.id, page=page+1, _anchor='related') }}">Next &raquo;</a>
         {% endif %}
     </div>
 </body>

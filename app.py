@@ -16,7 +16,7 @@ for collection_name in collection_names:
 #    collection = client.get_collection(collection_name)
 #    collections[collection_name] = collection
 
-default_collection = client.get_collection('similar')
+default_collection = client.get_collection('similar') #, metadata={"hnsw:space": "cosine", "hnsw:construction_ef": 1000, "hnsw:search_ef": 200})
 
 cached_ids = default_collection.get(include=[])['ids']
 
@@ -34,6 +34,8 @@ with open('./data/oracle-cards.json') as f:
             card_data.remove(card)
         elif card['set_type'] in ['memorabilia', 'token', 'minigame']:
             card_data.remove(card)
+#        elif not 'paper' in card['games']:
+#            card_data.remove(card)
 
     # For every card, if it doesn't have an image, check to see if a card_face has it. If so, move that up to the parent. Otherwise, remove the card entirely.
     for card in card_data[::-1]:
@@ -95,7 +97,7 @@ def fetch_related_cards(sfid):
     # Grab related SFIDs from the collection with their respective distances.
     response = default_collection.query(
         query_embeddings=embeddings,
-        n_results=200,
+        n_results=2000,
     )
 
     related_sfids = response['ids'][0]
@@ -106,10 +108,8 @@ def fetch_related_cards(sfid):
     for sfid in related_sfids:
         if sfid in cards_by_sfid:
             related_cards.append(cards_by_sfid[sfid])
-
-    for card in related_cards:
-        if card['set_type'] == 'memorabilia':
-            print(f'  {card["name"]} ({card["id"]}) is memorabilia')
+        else:
+            print(f'  {sfid} not found in cards_by_sfid')
 
     return related_cards, related_distances
 
