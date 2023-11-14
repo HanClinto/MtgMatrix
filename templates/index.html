@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+<body>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+    <h1>Popular Magic: The Gathering Cards</h1>
+    <div class="card-grid">
+        {% for card in cards %}
+        <div class="card">
+            <a href="{{ url_for('card', sfid=card.id) }}">
+                <h3>{{ card.name }}</h3>
+                <img src="{{ card.image_uris.small }}" alt="{{ card.name }}">
+                <p>EDHREC Rank: {{ card.edhrec_rank }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('index', page=page-1) }}">&laquo; Previous</a>
+        {% endif %}
+        <span>Page {{ page }} of {{ total_pages }}</span>
+        {% if page < total_pages %}
+            <a href="{{ url_for('index', page=page+1) }}">Next &raquo;</a>
+        {% endif %}
+    </div>    
+</body>
+</html>

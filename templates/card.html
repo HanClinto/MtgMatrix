@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+<body>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+    <div class="card-detail">
+        <h1>{{ card.name }}</h1>
+        <img src="{{ card.image_uris.normal }}" alt="{{ card.name }}">
+        <p><strong>Casting Cost:</strong> {{ card.mana_cost }}</p>
+        <p><strong>Type:</strong> {{ card.type_line }}</p>
+        <p><strong>Abilities:</strong> {{ card.oracle_text }}</p>
+        {% if card.power %}
+            <p><strong>Power/Toughness:</strong> {{ card.power }} / {{ card.toughness }}</p>
+        {% endif %}
+        {% if card.loyalty %}
+            <p><strong>Loyalty:</strong> {{ card.loyalty }}</p>
+        {% endif %}
+        <a href="https://www.tcgplayer.com/product/{{card.tcgplayer_id}}/"><p><strong>Price (USD):</strong> ${{ card.prices.usd }}</p></a>
+    </div>
+
+    <h2>Related Cards</h2>
+    <div class="related-card-grid">
+        {% for related_card in related_cards %}
+            <div class="related-card">
+                <h3>{{ related_card.name }}</h3>
+                <img src="{{ related_card.image_uris.normal }}" alt="{{ related_card.name }}">
+                <a href="https://www.tcgplayer.com/product/{{related_card.tcgplayer_id}}/"><p>Price: $ {{ related_card.prices.usd }}</p></a>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('card', sfid=card.id, page=page-1) }}">&laquo; Previous</a>
+        {% endif %}
+        <span>Page {{ page }} of {{ total_pages }}</span>
+        {% if page < total_pages %}
+            <a href="{{ url_for('card', sfid=card.id, page=page+1) }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+</body>
+</html>

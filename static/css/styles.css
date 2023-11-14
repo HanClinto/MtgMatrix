@@ -1,0 +1,89 @@
+/* Basic Reset */
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Theme Toggle Button */
+button {
+    margin: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* Card Grid Styling */
+.card-grid, .related-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card, .related-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.card img, .related-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Individual Card Details Styling */
+.card-detail {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px;
+    padding: 20px;
+    max-width: 600px;
+}
+
+.card-detail h1 {
+    margin-bottom: 20px;
+}
+
+.card-detail p {
+    margin-bottom: 10px;
+}
+
+/* Light and Dark Theme */
+body.light-theme {
+    background-color: #fff;
+    color: #333;
+}
+
+body.dark-theme {
+    background-color: #333;
+    color: #fff;
+}
+
+.card, .related-card, .card-detail {
+    background-color: inherit;
+    color: inherit;
+}
+
+/* Pagination */
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pagination a {
+    margin: 0 10px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    color: inherit;
+    text-decoration: none;
+}
+
+.pagination span {
+    margin: 0 10px;
+}

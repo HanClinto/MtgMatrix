@@ -1,0 +1,7 @@
+streamlit
+langchain
+chromadb
+anthropic
+sentence_transformers
+streamlit-analytics
+InstructorEmbedding
