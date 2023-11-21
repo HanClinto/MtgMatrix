@@ -1,19 +1,26 @@
 /* Basic Reset */
-body, h1, h2, h3, p {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Trebuchet MS', sans-serif;
+    background-color: #0a3a5a; /* Dark teal background */
+    color: #dcdcdc; /* Light grey text for readability */
     line-height: 1.6;
 }
 
-/* Theme Toggle Button */
+/* Navigation and Page Styling */
 button {
-    margin: 20px;
+    background-color: #f8b400; /* Gold color */
+    color: #0a3a5a; /* Dark teal text */
+    border: none;
     padding: 10px 20px;
     cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
 /* Card Grid Styling */
@@ -25,7 +32,8 @@ button {
 }
 
 .card, .related-card {
-    border: 1px solid #ddd;
+    background-color: #122438; /* Darker blue cards background */
+    border: 1px solid #f8b400; /* Gold border */
     border-radius: 8px;
     padding: 10px;
     text-align: center;
@@ -39,35 +47,20 @@ button {
 
 /* Individual Card Details Styling */
 .card-detail {
-    border: 1px solid #ddd;
+    background-color: #122438; /* Darker blue background */
+    border: 1px solid #f8b400; /* Gold border */
     border-radius: 8px;
-    margin: 20px;
+    margin: 20px auto;
     padding: 20px;
     max-width: 600px;
 }
 
-.card-detail h1 {
-    margin-bottom: 20px;
+.card-detail h1, .card-detail p {
+    color: #dcdcdc;
 }
 
 .card-detail p {
     margin-bottom: 10px;
-}
-
-/* Light and Dark Theme */
-body.light-theme {
-    background-color: #ccc;
-    color: #333;
-}
-
-body.dark-theme {
-    background-color: #333;
-    color: #ccc;
-}
-
-.card, .related-card, .card-detail {
-    background-color: inherit;
-    color: inherit;
 }
 
 /* Pagination */
@@ -77,13 +70,45 @@ body.dark-theme {
 }
 
 .pagination a {
+    color: #f8b400; /* Gold color links */
     margin: 0 10px;
     padding: 5px 10px;
-    border: 1px solid #ddd;
-    color: inherit;
+    border: 1px solid #f8b400; /* Gold border */
+    border-radius: 5px;
     text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #f8b400; /* Gold background on hover */
+    color: #0a3a5a; /* Dark teal text on hover */
 }
 
 .pagination span {
-    margin: 0 10px;
+    color: #dcdcdc;
+}
+
+/* Hyperlink Colors */
+a {
+    color: #f8b400; /* Gold for new links */
+    text-decoration: none; /* Optional: removes underline */
+    transition: color 0.3s ease-in-out;
+}
+
+a:visited {
+    color: #b48b05; /* Darker gold for visited links */
+}
+
+a:hover {
+    color: #ffffff; /* White on hover for high contrast */
+    text-decoration: underline; /* Optional: adds underline on hover */
+}
+
+/* Update Pagination Links if using the same style */
+.pagination a {
+    /* Same as 'a' styles above */
+}
+
+.pagination a:visited {
+    /* Same as 'a:visited' styles above */
 }

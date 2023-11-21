@@ -8,7 +8,6 @@ from tqdm import tqdm
 
 import chromadb
 
-from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain.schema import Document
 from langchain.embeddings import HuggingFaceInstructEmbeddings
@@ -33,6 +32,8 @@ query_instructions = [
         ['type_line', 'mana_cost', 'cmc', 'color_identity', 'power', 'toughness', 'produced_mana', 'oracle_text']),
     ('johnny', 'Represent the creativity of the Magic: The Gathering card in terms of its interactions with other cards, combos, complexity, and other creative uses for retrieval of related cards: ',
         ['produced_mana', 'oracle_text']),
+    ('flavor', 'Represent the flavor of the Magic: The Gathering card in terms of its themes, characters, emotions, and flavor text for retrieval of related cards: ',
+        ['flavor'])
 ]
 
 input_file = 'oracle-cards-20231113220154.json'
@@ -52,9 +53,6 @@ with open(input_file) as f:
             card_data.remove(card)
 
     cards_by_sfid = {card['id']: card for card in card_data}
-
-# Create a text splitter
-splitter = CharacterTextSplitter()
 
 # Add documents to the DB
 query_instruction = query_instructions[0][1]
@@ -80,8 +78,6 @@ client = chromadb.PersistentClient(path=output_dir)
 
 FORCE_RECALCULATE = False
 
-print(f'Generating embeddings for {len(documents)} cards...')
-
 for query_tag, embed_instruction, embed_fields in query_instructions:
     # Create an embeddings model for this query instruction
     embedding_function = HuggingFaceInstructEmbeddings(
@@ -106,6 +102,10 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
 
         card_id = card['id']
 
+        # Check to see if this ID is already in the collection
+        if card_id in cached_ids and not FORCE_RECALCULATE:
+            continue
+
         # Replace all instances of the card name with 'this card'
         oracle_text = card_field(card, 'oracle_text')
         card_names = card['name'].split(' // ')
@@ -120,10 +120,6 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
         # NOTE: We are not including the name in any of the representations (except for Vorthos), because the name is not a good indicator of similarity.
         for field in embed_fields:
             card_content += card_field(card, field)
-
-        # Check to see if this ID is already in the collection
-        if card_id in cached_ids and not FORCE_RECALCULATE:
-            continue
 
         embeddings = embedding_function.embed_documents([card_content])
 
@@ -145,8 +141,5 @@ for query_tag, embed_instruction, embed_fields in query_instructions:
     #with open(f'embeddings_{output_dir}_{query_tag}.json', 'w') as f:
     #    json.dump(embeddings_by_id, f, indent=0)
     print(f'  Done writing embeddings!')
-
-# TODO: Combine all of the DBs into a single DB.
-# db = Chroma(persist_directory=output_dir)
 
 
