@@ -25,4 +25,4 @@ function saveThemePreference() {
 }
 
 // Attach saveThemePreference to theme toggle if using local storage
-document.querySelector('button').addEventListener('click', saveThemePreference);
+//document.querySelector('button').addEventListener('click', saveThemePreference);

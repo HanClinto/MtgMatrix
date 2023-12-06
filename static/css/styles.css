@@ -5,6 +5,12 @@
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-weight: bold;
+    margin: 24px 60px 0;
+}
+
 body {
     font-family: 'Trebuchet MS', sans-serif;
     background-color: #0a3a5a; /* Dark teal background */
@@ -37,12 +43,14 @@ button {
     border-radius: 8px;
     padding: 10px;
     text-align: center;
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); */
 }
 
-.card img, .related-card img {
+.card img, .card-detail img, .related-card img {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
+    border-radius: 4.75% / 3.5%;
 }
 
 /* Individual Card Details Styling */
@@ -111,4 +119,45 @@ a:hover {
 
 .pagination a:visited {
     /* Same as 'a:visited' styles above */
+}
+
+
+/* Search Menu Styles */
+.search-menu {
+    height: 100%;
+    width: 20px; /* Search menu width is zero by default */
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #122438; /* Darker blue background */
+    overflow-x: hidden;
+    transition: 0.5s; /* Smooth transition effect */
+    padding-top: 60px; /* Give some space on top */
+}
+
+.search-menu-content {
+    padding: 20px;
+    display: block;
+}
+
+/* Search Button Style */
+.search-btn {
+    position: fixed;
+    z-index: 1000; /* Higher than the search menu */
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #dcdcdc;
+}
+
+/* Make the search menu full width on index.html */
+.index .search-menu {
+    width: 250px; /* Default width for index page */
+}
+
+/* Adjust main content when menu is open */
+body.menu-active {
+    margin-left: 250px; /* Same as the search menu width */
 }

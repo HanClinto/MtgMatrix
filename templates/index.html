@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Popular Magic: The Gathering Cards{% endblock %}
+{% block body_class %}index{% endblock %}
+
+{% block content %}
+    <!-- Main view of viewing most popular MTG cards -->
     <h1>Popular Magic: The Gathering Cards</h1>
     <div class="card-grid">
         {% for card in cards %}
@@ -25,6 +24,5 @@
         {% if page < total_pages %}
             <a href="{{ url_for('index', page=page+1) }}">Next &raquo;</a>
         {% endif %}
-    </div>    
-</body>
-</html>
+    </div>
+{% endblock %}
